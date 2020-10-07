@@ -1,0 +1,13 @@
+@import 'reset';
+@import 'var';
+@import 'header';
+@import 'search';
+@import 'animation';
+
+body {
+  background-color: $bodyBgc;
+}
+
+.hidden {
+  display: none;
+}

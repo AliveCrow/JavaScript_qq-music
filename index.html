@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge,chrome=1" />
+    <meta name="author" content="grit" />
+    <link rel="stylesheet" href="./scss/app.scss" />
+    <title>QQ音乐</title>
+  </head>
+
+  <body>
+    <header class="header">
+      <section class="header_box">
+        <section class="header_top">
+          <div class="header_left">
+            <img class="logo" src="./images/logo.svg" alt="" />
+            <section class="context1">
+              <h2>QQ音乐</h2>
+              <p>打开APP收藏下载</p>
+            </section>
+          </div>
+          <div class="header_right">下载APP</div>
+        </section>
+        <section class="header_tab">
+          <ul>
+            <li class="active" data-type="tab" data-view=".rec-view">推荐</li>
+            <li data-type="tab" data-view=".rank-view">排行</li>
+          </ul>
+        </section>
+      </section>
+    </header>
+    <section class="main_box">
+      <section>
+        <section class="rec-view">
+          <section class="search">
+            <form class="search_form">
+              <div class="search_form_group">
+                <input data-view=".search_view" data-type="search" class="search_form_input" type="text" placeholder="搜索" />
+                <img src="./images/search.svg" alt="" height="" />
+                <span class="search_form_button hidden">取消</span>
+              </div>
+            </form>
+          </section>
+          <section class="hidden search_view">搜索</section>
+          推荐
+        </section>
+        <section class="rank-view hidden">排行</section>
+      </section>
+    </section>
+
+    <script src="./script/app.js"></script>
+  </body>
+</html>

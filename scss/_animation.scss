@@ -1,0 +1,24 @@
+@import 'var';
+
+
+@keyframes move {
+  0% {
+    width: 0;
+    transform: translateX(.7rem);
+  }
+
+  100% {
+    width: 1.4rem;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fontColor {
+  0% {
+    color: $fontColor;
+  }
+
+  100% {
+    color: $activeColor;
+  }
+}
