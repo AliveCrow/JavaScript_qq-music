@@ -26,6 +26,7 @@
           <ul>
             <li class="active" data-type="tab" data-view=".rec-view">推荐</li>
             <li data-type="tab" data-view=".rank-view">排行</li>
+            <li data-type="tab" data-view=".search-view">搜索</li>
           </ul>
         </section>
       </section>
@@ -33,6 +34,22 @@
     <section class="main_box">
       <section>
         <section class="rec-view">
+          <section class="slider_box">
+            <div class="slider clearfix">
+              <div class="slider_img"></div>
+            </div>
+          </section>
+          <section class="song_list">
+            <div class="new_song_list">
+              <h2>新歌推荐</h2>
+              <ul class="song_list_ul"></ul>
+            </div>
+          </section>
+        </section>
+
+        <section class="rank-view hidden">排行</section>
+
+        <section class="search-view hidden">
           <section class="search">
             <form class="search_form">
               <div class="search_form_group">
@@ -43,12 +60,11 @@
             </form>
           </section>
           <section class="hidden search_view">搜索</section>
-          推荐
         </section>
-        <section class="rank-view hidden">排行</section>
       </section>
     </section>
 
+    <script src="https://cdn.bootcdn.net/ajax/libs/underscore.js/1.11.0/underscore-min.js"></script>
     <script src="./script/app.js"></script>
   </body>
 </html>

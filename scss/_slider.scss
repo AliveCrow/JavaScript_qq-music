@@ -1,0 +1,36 @@
+.slider_box {
+  width: 100%;
+
+  .slider {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .slider_length {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .slider_img {
+    display: flex;
+
+    width: 600%;
+    position: relative;
+    left: 0;
+  }
+
+  a {
+    display: block;
+    width: 100%;
+  }
+
+  img {
+    width: 100%;
+  }
+}
+
+.clearfix:after {
+  content: '';
+  display: block;
+  clear: both;
+}

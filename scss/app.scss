@@ -1,11 +1,11 @@
-@import 'reset';
-@import 'var';
-@import 'header';
-@import 'search';
-@import 'animation';
+@import 'slider', 'newSong', 'animation', 'search', 'header', 'var', 'reset';
 
 body {
   background-color: $bodyBgc;
+
+  &::-webkit-scrollbar {
+    width: 1px;
+  }
 }
 
 .hidden {

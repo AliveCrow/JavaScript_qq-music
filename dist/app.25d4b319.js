@@ -117,7 +117,73 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"script/tab.js":[function(require,module,exports) {
+})({"script/slider.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Slider = /*#__PURE__*/function () {
+  function Slider(el) {
+    _classCallCheck(this, Slider);
+
+    this.el = el;
+    this.boxLength = this.el.children.length * 100;
+    this.el.style.width = "".concat(this.boxLength, "%");
+  }
+
+  _createClass(Slider, [{
+    key: "run",
+    value: function run() {
+      var _this = this;
+
+      var povit = this.el.clientWidth / 6;
+      var n = 0;
+      var id = setInterval(function () {
+        n += 1;
+        _this.el.style.transition = 'left 1s cubic-bezier(.35, .79, .77, 1.01)';
+        _this.el.style.left = "-".concat(povit * n, "px");
+
+        if (n >= 5) {
+          setTimeout(function () {
+            _this.el.style.transition = '';
+            n = 0;
+            _this.el.style.left = "-".concat(povit * n, "px");
+          }, 1000);
+        }
+      }, 1500);
+    }
+  }]);
+
+  return Slider;
+}(); // let sliderImg = document.querySelector('.slider_img')
+// //容器长度
+// let boxLength = sliderImg.children.length * 100
+// sliderImg.style.width = `${boxLength}%`
+// let povit = sliderImg.clientWidth / 6;
+// let n = 0;
+// let id = setInterval(() => {
+//   n += 1
+//   sliderImg.style.transition = 'left 1s cubic-bezier(.35, .79, .77, 1.01)'
+//   sliderImg.style.left = `-${povit * n}px`
+//   if (n >= 5) {
+//     sliderImg.style.transition = ''
+//     n = 0
+//     sliderImg.style.left = `-${povit * n}px`
+//   }
+// }, 1000)
+
+
+exports.default = Slider;
+},{}],"script/tab.js":[function(require,module,exports) {
 document.addEventListener('click', function (e) {
   //判断点击是否是tab
   if (e.target.dataset.type !== 'tab') return;
@@ -153,15 +219,267 @@ input.addEventListener('blur', function (e) {
     content.style.display = 'none';
   }
 });
+},{}],"script/ajax.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Ajax = /*#__PURE__*/function () {
+  function Ajax() {
+    _classCallCheck(this, Ajax);
+  }
+
+  _createClass(Ajax, [{
+    key: "req",
+    value: function req(method, url, options) {
+      return new Promise(function (resolve, reject) {
+        var request = new XMLHttpRequest();
+        request.open(method, url);
+
+        request.onreadystatechange = function () {
+          if (request.readyState === 4) {
+            if (request.status === 200) {
+              resolve(request.response);
+            } else if (request.status >= 400) {
+              reject(resquest);
+            }
+          }
+        };
+
+        request.send();
+      });
+    }
+  }]);
+
+  return Ajax;
+}(); // const request = new XMLHttpRequest()
+// request.open(method, url)
+// request.onreadystatechange = (e) => {
+//   if (request.readyState === 4) {
+//     if (request.status === 200) {
+//       // console.log(JSON.parse(request.response));
+//       return JSON.parse(request.response)
+//     } else {
+//     }
+//   }
+// }
+// request.send()
+// }
+
+
+exports.default = Ajax;
+},{}],"script/banner.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _ajax = _interopRequireDefault(require("./ajax.js"));
+
+var _slider = _interopRequireDefault(require("./slider.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var sliderFun = function sliderFun() {
+  var getData = new _ajax.default();
+  var banner = getData.req('GET', 'http://localhost:3300/recommend/banner'); //加载轮播图
+
+  banner.then(function (res) {
+    var song = JSON.parse(res);
+    var sliderImg = document.querySelector('.slider').firstElementChild;
+    song.data.push(song.data[0]);
+    sliderImg.innerHTML = song.data.map(function (item) {
+      return "<a href=\"".concat(item.h5Url, "\">\n        <img src=\"").concat(item.picUrl, "\" alt=\"\" />\n      </a>");
+    }).join("");
+    var slider = new _slider.default(document.querySelector('.slider_img'));
+    slider.run();
+  });
+};
+
+var _default = sliderFun;
+exports.default = _default;
+},{"./ajax.js":"script/ajax.js","./slider.js":"script/slider.js"}],"script/ablum_list.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _ajax = _interopRequireDefault(require("./ajax.js"));
+
+var _slider = _interopRequireDefault(require("./slider.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Ablum = /*#__PURE__*/function () {
+  function Ablum(item) {
+    _classCallCheck(this, Ablum);
+
+    this.item = item;
+  }
+
+  _createClass(Ablum, [{
+    key: "render",
+    value: function render() {
+      var song_list_ul = document.querySelector('.song_list_ul');
+      var dom = document.createElement('li');
+      dom.innerHTML = "<li >\n      <a href=\"\">\n        <img\n          class=\"img_url lazy_load\"\n          data-src=\"".concat(this.item.imgurl, "\"\n          alt=\"\"\n        />\n        <p>").concat(this.item.dissname, "</p>\n        <img class=\"img_btn\" alt=\"img\" src='http://qiniu.dreamsakula.top/images/20201009083809.png' />\n      </a>\n    </li>");
+      song_list_ul.appendChild(dom);
+    }
+  }]);
+
+  return Ablum;
+}(); // function ablumList() {
+//   //歌单渲染
+//   let getData = new AjaxReq()
+//   let songList = getData.req('GET', 'http://localhost:3300/songlist/list?category=165')
+//   songList.then(res => {
+//     let songList = JSON.parse(res)
+//     let song_list_ul = document.querySelector('.song_list_ul')
+//     song_list_ul.innerHTML = songList.data.list.map(item => {
+//       return `<li>
+//     <a href="">
+//       <img
+//         class="img_url lazy_load"
+//         data-src="${item.imgurl}"
+//         alt=""
+//       />
+//       <p>${item.dissname}</p>
+//       <img class="img_btn" alt="img" src='http://qiniu.dreamsakula.top/images/20201009083809.png' />
+//     </a>
+//   </li>`
+//     }).join("")
+//   })
+// }
+// export default ablumList
+
+
+exports.default = Ablum;
+},{"./ajax.js":"script/ajax.js","./slider.js":"script/slider.js"}],"script/lazy_load.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+function lazyLoad(images) {
+  var imgs = [].slice.call(images); //Array.from(images)转成数组
+
+  var onscroll = throttle(function () {
+    if (imgs.length === 0) {
+      window.removeEventListener('scroll', function () {});
+      return;
+    }
+
+    imgs = imgs.filter(function (img) {
+      return img.classList.contains('lazy_load');
+    });
+    imgs.forEach(function (item) {
+      if (inViewport(item)) {
+        loadImage(item);
+      }
+    });
+  }, 700);
+  window.addEventListener('scroll', onscroll);
+  window.dispatchEvent(new Event('scroll'));
+
+  function throttle(func, wait) {
+    var prev, timer;
+    return function fn() {
+      var curr = Date.now();
+      var diff = curr - prev;
+
+      if (!prev || diff >= wait) {
+        func();
+        prev = curr;
+      } else if (diff < wait) {
+        clearTimeout(timer);
+        timer = setTimeout(fn, wait - diff);
+      }
+    };
+  }
+
+  function inViewport(img) {
+    var _img$getBoundingClien = img.getBoundingClientRect(),
+        top = _img$getBoundingClien.top,
+        left = _img$getBoundingClien.left,
+        right = _img$getBoundingClien.right,
+        bottom = _img$getBoundingClien.bottom; //当前图片距离窗口边界的距离
+
+
+    var vpWidth = document.documentElement.clientWidth;
+    var vpHeight = document.documentElement.clientHeight;
+    return (top > 0 && top < vpHeight || bottom > 0 && bottom < vpHeight) && (left > 0 && left < vpWidth || right > 0 && right < vpWidth);
+  }
+
+  function loadImage(img) {
+    var image = new Image();
+    image.src = img.dataset.src;
+
+    image.onload = function () {
+      img.src = image.src;
+      img.classList.remove('lazyload');
+    };
+  }
+}
+
+var _default = lazyLoad;
+exports.default = _default;
 },{}],"script/app.js":[function(require,module,exports) {
 "use strict";
+
+var _slider = _interopRequireDefault(require("./slider.js"));
 
 require("./tab.js");
 
 require("./search.js");
 
-console.log('app.js');
-},{"./tab.js":"script/tab.js","./search.js":"script/search.js"}],"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+var _ajax = _interopRequireDefault(require("./ajax.js"));
+
+var _banner = _interopRequireDefault(require("./banner.js"));
+
+var _ablum_list = _interopRequireDefault(require("./ablum_list.js"));
+
+var _lazy_load = _interopRequireDefault(require("./lazy_load.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var render = function render() {
+  (0, _banner.default)(); //轮播图
+
+  var getData = new _ajax.default();
+  var songList = getData.req('GET', 'http://localhost:3300/songlist/list?category=165');
+  songList.then(function (res) {
+    var songList = JSON.parse(res);
+    songList.data.list.map(function (item) {
+      var ablumList = new _ablum_list.default(item);
+      ablumList.render();
+      (0, _lazy_load.default)(document.querySelectorAll('.lazy_load')); //懒加载
+    });
+  }); // ablumList() //个单加载
+};
+
+render();
+},{"./slider.js":"script/slider.js","./tab.js":"script/tab.js","./search.js":"script/search.js","./ajax.js":"script/ajax.js","./banner.js":"script/banner.js","./ablum_list.js":"script/ablum_list.js","./lazy_load.js":"script/lazy_load.js"}],"../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -189,7 +507,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57293" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53782" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -365,5 +683,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","script/app.js"], null)
+},{}]},{},["../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","script/app.js"], null)
 //# sourceMappingURL=/app.25d4b319.js.map
