@@ -183,100 +183,6 @@ var Slider = /*#__PURE__*/function () {
 
 
 exports.default = Slider;
-},{}],"script/tab.js":[function(require,module,exports) {
-document.addEventListener('click', function (e) {
-  //判断点击是否是tab
-  if (e.target.dataset.type !== 'tab') return;
-  [].forEach.call(e.target.parentElement.children, function (item) {
-    item.classList.remove('active');
-  });
-  e.target.classList.add('active');
-  var content = document.querySelector(e.target.dataset.view);
-
-  if (content) {
-    [].forEach.call(content.parentElement.children, function (item) {
-      item.style.display = 'none';
-    });
-  }
-
-  content.style.display = 'block';
-});
-},{}],"script/search.js":[function(require,module,exports) {
-var input = document.querySelector('.search_form_input');
-input.addEventListener('focus', function (e) {
-  console.log(e.target.dataset.type);
-  if (e.target.dataset.type !== 'search') return;
-  var content = document.querySelector(e.target.dataset.view);
-
-  if (content) {
-    content.style.display = 'block';
-  }
-});
-input.addEventListener('blur', function (e) {
-  var content = document.querySelector('.search_view');
-
-  if (content) {
-    content.style.display = 'none';
-  }
-});
-},{}],"script/ajax.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var Ajax = /*#__PURE__*/function () {
-  function Ajax() {
-    _classCallCheck(this, Ajax);
-  }
-
-  _createClass(Ajax, [{
-    key: "req",
-    value: function req(method, url, options) {
-      return new Promise(function (resolve, reject) {
-        var request = new XMLHttpRequest();
-        request.open(method, url);
-
-        request.onreadystatechange = function () {
-          if (request.readyState === 4) {
-            if (request.status === 200) {
-              resolve(request.response);
-            } else if (request.status >= 400) {
-              reject(resquest);
-            }
-          }
-        };
-
-        request.send();
-      });
-    }
-  }]);
-
-  return Ajax;
-}(); // const request = new XMLHttpRequest()
-// request.open(method, url)
-// request.onreadystatechange = (e) => {
-//   if (request.readyState === 4) {
-//     if (request.status === 200) {
-//       // console.log(JSON.parse(request.response));
-//       return JSON.parse(request.response)
-//     } else {
-//     }
-//   }
-// }
-// request.send()
-// }
-
-
-exports.default = Ajax;
 },{}],"script/ablum_list.js":[function(require,module,exports) {
 "use strict";
 
@@ -284,12 +190,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-
-var _ajax = _interopRequireDefault(require("./ajax.js"));
-
-var _slider = _interopRequireDefault(require("./slider.js"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -309,7 +209,7 @@ var Ablum = /*#__PURE__*/function () {
     value: function render() {
       var song_list_ul = document.querySelector('.song_list_ul');
       var dom = document.createElement('li');
-      dom.innerHTML = "<li >\n      <a href=\"\">\n        <img\n          class=\"img_url lazy_load\"\n          data-src=\"".concat(this.item.imgurl, "\"\n          alt=\"\"\n        />\n        <p>").concat(this.item.dissname, "</p>\n        <img class=\"img_btn\" alt=\"img\" src='http://qiniu.dreamsakula.top/images/20201009083809.png' />\n      </a>\n    </li>");
+      dom.innerHTML = "<li >\n      <a href=\"\">\n\n      <img\n      class=\"img_url lazy_load\"\n      data-src=\"".concat(this.item.imgurl, "\"\n      alt=\"\"\n    />\n\n        <p>").concat(this.item.dissname, "</p>\n        <img class=\"img_btn\" alt=\"img\" src='http://qiniu.dreamsakula.top/images/20201009083809.png' />\n      </a>\n    </li>");
       song_list_ul.appendChild(dom);
     }
   }]);
@@ -318,7 +218,7 @@ var Ablum = /*#__PURE__*/function () {
 }();
 
 exports.default = Ablum;
-},{"./ajax.js":"script/ajax.js","./slider.js":"script/slider.js"}],"script/lazy_load.js":[function(require,module,exports) {
+},{}],"script/lazy_load.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -409,6 +309,100 @@ function lazyLoad(images) {
 
 var _default = lazyLoad;
 exports.default = _default;
+},{}],"script/rank.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Rank = /*#__PURE__*/function () {
+  function Rank(item) {
+    _classCallCheck(this, Rank);
+
+    this.item = item;
+  }
+
+  _createClass(Rank, [{
+    key: "render",
+    value: function render() {
+      var rank_view_ul = document.querySelector('.rank_view_ul');
+      var dom = document.createElement('li');
+      dom.classList.add('lazy_load');
+      dom.innerHTML = "<a href=\"#\">\n        <dl>\n          <dt>".concat(this.item.label, "</dt>\n          <dd><span>1. </span>").concat(this.item.song[0].title + '-' + this.item.song[0].singerName, "</dd>\n          <dd><span>2. </span>$").concat(this.item.song[1].title + '-' + this.item.song[1].singerName, "</dd>\n          <dd><span>3. </span>").concat(this.item.song[2].title + '-' + this.item.song[2].singerName, "</dd>\n        </dl>\n        <img src=\"").concat(this.item.picUrl, "\" alt=\"\" />\n      </a>");
+      rank_view_ul.appendChild(dom);
+    }
+  }]);
+
+  return Rank;
+}();
+
+exports.default = Rank;
+},{}],"script/ajax.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Ajax = /*#__PURE__*/function () {
+  function Ajax() {
+    _classCallCheck(this, Ajax);
+  }
+
+  _createClass(Ajax, [{
+    key: "req",
+    value: function req(method, url, options) {
+      return new Promise(function (resolve, reject) {
+        var request = new XMLHttpRequest();
+        request.open(method, url);
+
+        request.onreadystatechange = function () {
+          if (request.readyState === 4) {
+            if (request.status === 200) {
+              resolve(request.response);
+            } else if (request.status >= 400) {
+              reject(resquest);
+            }
+          }
+        };
+
+        request.send();
+      });
+    }
+  }]);
+
+  return Ajax;
+}(); // const request = new XMLHttpRequest()
+// request.open(method, url)
+// request.onreadystatechange = (e) => {
+//   if (request.readyState === 4) {
+//     if (request.status === 200) {
+//       // console.log(JSON.parse(request.response));
+//       return JSON.parse(request.response)
+//     } else {
+//     }
+//   }
+// }
+// request.send()
+// }
+
+
+exports.default = Ajax;
 },{}],"script/init.js":[function(require,module,exports) {
 "use strict";
 
@@ -417,20 +411,24 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _ajax = _interopRequireDefault(require("./ajax.js"));
-
 var _slider = _interopRequireDefault(require("./slider.js"));
 
 var _ablum_list = _interopRequireDefault(require("./ablum_list.js"));
 
 var _lazy_load = _interopRequireDefault(require("./lazy_load.js"));
 
+var _rank = _interopRequireDefault(require("./rank.js"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var getData = new _ajax.default();
+var _require = require("./ajax"),
+    Ajax = _require.default;
+
 var init = {
+  getData: new Ajax(),
+  page: 1,
   slider: function slider() {
-    var banner = getData.req('GET', 'http://localhost:3300/recommend/banner'); //加载轮播图
+    var banner = this.getData.req('GET', 'http://localhost:3300/recommend/banner'); //加载轮播图
 
     banner.then(function (res) {
       var song = JSON.parse(res);
@@ -444,7 +442,7 @@ var init = {
     });
   },
   ablumList: function ablumList() {
-    var songList = getData.req('GET', 'http://localhost:3300/songlist/list?category=165');
+    var songList = this.getData.req('GET', 'http://localhost:3300/songlist/list?category=165');
     songList.then(function (res) {
       var songList = JSON.parse(res);
       songList.data.list.map(function (item) {
@@ -453,34 +451,204 @@ var init = {
         (0, _lazy_load.default)(document.querySelectorAll('.lazy_load')); //懒加载
       });
     });
+  },
+  rankList: function rankList() {
+    var rankList = this.getData.req('GET', 'http://localhost:3300/top/category?showDetail=1');
+    rankList.then(function (res) {
+      var newArray = [];
+      var resData = JSON.parse(res);
+      [].slice.call(resData.data);
+      resData.data.forEach(function (item) {
+        item.list.forEach(function (listItem) {
+          newArray.push(listItem);
+        });
+      });
+      newArray.map(function (item) {
+        var rankRender = new _rank.default(item);
+        rankRender.render();
+      });
+    });
+  },
+  hotWord: function hotWord() {
+    var hotWord = this.getData.req('GET', 'http://localhost:3300/search/hot');
+    hotWord.then(function (res) {
+      console.log(JSON.parse(res));
+      JSON.parse(res).data.map(function (item) {
+        var search_view_hot_ul = document.querySelector('.search-view-hot-ul');
+        var dom = document.createElement('li');
+        dom.innerHTML = "\n      <li>".concat(item.k, "</li>\n      ");
+        search_view_hot_ul.appendChild(dom);
+      });
+    });
+  },
+  search: function search(page) {
+    console.log('run');
+
+    var _this = this;
+
+    var keyContainer = document.querySelector('.search_form_input');
+    var search_form = document.querySelector('.search_form');
+    var input = document.querySelector('.search_form_input');
+    var search_view_hot = document.querySelector('.search-view-hot');
+    var search_result = document.querySelector('.search-view-result');
+    var search_view_result_ul = document.querySelector('.search-view-result-ul');
+    search_form.addEventListener('submit', function (e) {
+      e.preventDefault(); //是否是歌手
+
+      _this.getData.req('GET', "http://localhost:3300/search?key=".concat(input.value, "&t=9")).then(function (singer) {
+        if (JSON.parse(singer).data.list !== []) {
+          var singerName = JSON.parse(singer).data.list[0].singerName;
+          var songNum = JSON.parse(singer).data.list[0].songNum;
+          var singerPic = JSON.parse(singer).data.list[0].singerPic;
+          var albumNum = JSON.parse(singer).data.list[0].albumNum;
+
+          var search = _this.getData.req('GET', "http://localhost:3300/search?key=".concat(input.value, "&t=0&pageSize=20&pageNo=").concat(page || _this.page));
+
+          search.then(function (res) {
+            console.log("ryn");
+            var list = JSON.parse(res).data.list;
+            console.log(list);
+            var dom_singer = document.createElement('a');
+            dom_singer.classList.add('result');
+            dom_singer.innerHTML = "<img src=\"".concat(singerPic, "\" alt=\"\" />\n            <dl>\n              <dt>\u6B4C\u624B: ").concat(singerName, "</dt>\n              <dd>\u6B4C\u66F2:").concat(songNum, " \u4E13\u8F91:").concat(albumNum, "</dd>\n            </dl>\n            ");
+            search_result.insertBefore(dom_singer, search_view_result_ul);
+            var dom_singList = document.createElement('li');
+            list.map(function (list_item) {
+              _this.renderList(list_item);
+            });
+            search_view_hot.classList.add('hidden');
+            search_result.classList.remove('hidden');
+          });
+        } else {}
+      });
+    });
+  },
+  renderList: function renderList(item) {
+    var search_view_result_ul = document.querySelector('.search-view-result-ul');
+    var dom_singList = document.createElement('li');
+    dom_singList.innerHTML = "\n      <a href=\"".concat(item.albummid, "\">\n        <dl>\n          <dt>").concat(item.songname, "</dt>\n          <dd>").concat(item.singer[0].name, "</dd>\n        </dl>\n      </a>\n    ");
+    search_view_result_ul.appendChild(dom_singList);
+  },
+  //滚动加载
+  scrollLoad: function scrollLoad() {
+    var _this = this;
+
+    var page = 1;
+    var keyContainer = document.querySelector('.search_form_input');
+    var search_form = document.querySelector('.search_form');
+    var input = document.querySelector('.search_form_input');
+    var search_view_hot = document.querySelector('.search-view-hot');
+    var search_result = document.querySelector('.search-view-result');
+    var search_view_result_ul = document.querySelector('.search-view-result-ul');
+    window.addEventListener('scroll', function (e) {
+      if (pageYOffset + document.documentElement.clientHeight > document.body.scrollHeight - 50) {
+        page += 1;
+
+        _this.getData.req('GET', "http://localhost:3300/search?key=".concat(input.value, "&t=9")).then(function (singer) {
+          if (JSON.parse(singer).data.list !== []) {
+            var singerName = JSON.parse(singer).data.list[0].singerName;
+            var songNum = JSON.parse(singer).data.list[0].songNum;
+            var singerPic = JSON.parse(singer).data.list[0].singerPic;
+            var albumNum = JSON.parse(singer).data.list[0].albumNum;
+
+            var search = _this.getData.req('GET', "http://localhost:3300/search?key=".concat(input.value, "&t=0&pageSize=20&pageNo=").concat(page || _this.page));
+
+            search.then(function (res) {
+              console.log("ryn");
+              var list = JSON.parse(res).data.list;
+              console.log(list);
+              var dom_singer = document.createElement('a');
+              dom_singer.classList.add('result');
+              dom_singer.innerHTML = "<img src=\"".concat(singerPic, "\" alt=\"\" />\n              <dl>\n                <dt>\u6B4C\u624B: ").concat(singerName, "</dt>\n                <dd>\u6B4C\u66F2:").concat(songNum, " \u4E13\u8F91:").concat(albumNum, "</dd>\n              </dl>\n              ");
+              search_result.insertBefore(dom_singer, search_view_result_ul);
+              var dom_singList = document.createElement('li');
+              list.map(function (list_item) {
+                _this.renderList(list_item);
+              });
+              search_view_hot.classList.add('hidden');
+              search_result.classList.remove('hidden');
+            });
+          } else {}
+        });
+      }
+    });
   }
 };
 var _default = init;
 exports.default = _default;
-},{"./ajax.js":"script/ajax.js","./slider.js":"script/slider.js","./ablum_list.js":"script/ablum_list.js","./lazy_load.js":"script/lazy_load.js"}],"script/app.js":[function(require,module,exports) {
+},{"./slider.js":"script/slider.js","./ablum_list.js":"script/ablum_list.js","./lazy_load.js":"script/lazy_load.js","./rank.js":"script/rank.js","./ajax":"script/ajax.js"}],"script/tab.js":[function(require,module,exports) {
+document.addEventListener('click', function (e) {
+  //判断点击是否是tab
+  if (e.target.dataset.type !== 'tab') return;
+  [].forEach.call(e.target.parentElement.children, function (item) {
+    item.classList.remove('active');
+  });
+  e.target.classList.add('active');
+  var content = document.querySelector(e.target.dataset.view);
+
+  if (content) {
+    [].forEach.call(content.parentElement.children, function (item) {
+      item.style.display = 'none';
+    });
+  }
+
+  content.style.display = 'block';
+});
+},{}],"script/search.js":[function(require,module,exports) {
+var input = document.querySelector('.search_form_input');
+hot();
+input.addEventListener('focus', function (e) {
+  console.log(e.target.dataset.type);
+  if (e.target.dataset.type !== 'search') return;
+  var content = document.querySelector(e.target.dataset.view);
+
+  if (content) {
+    content.style.display = 'block';
+  }
+});
+input.addEventListener('blur', function (e) {
+  input.value = "";
+  var content = document.querySelector('.search_view');
+
+  if (content) {
+    content.style.display = 'none';
+  }
+}); //热门搜索
+
+function hot(item) {
+  var search_view_hot_ul = document.querySelector('.search-view-hot-ul');
+  var dom = document.createElement('li');
+  dom.innerHTML = "\n  <li>".concat(item, "</li>\n  ");
+  search_view_hot_ul.appendChild(dom);
+}
+},{}],"script/app.js":[function(require,module,exports) {
 "use strict";
 
-var _slider = _interopRequireDefault(require("./slider.js"));
+var _init = _interopRequireDefault(require("./init.js"));
 
 require("./tab.js");
 
 require("./search.js");
-
-var _ajax = _interopRequireDefault(require("./ajax.js"));
-
-var _init = _interopRequireDefault(require("./init.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var render = function render() {
   _init.default.slider();
 
-  _init.default.ablumList(); // ablumList() //个单加载
+  _init.default.ablumList();
+
+  _init.default.rankList();
+
+  _init.default.hotWord();
+
+  _init.default.search();
+
+  _init.default.scrollLoad(); // ablumList() //个单加载
 
 };
 
 render();
-},{"./slider.js":"script/slider.js","./tab.js":"script/tab.js","./search.js":"script/search.js","./ajax.js":"script/ajax.js","./init.js":"script/init.js"}],"../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./init.js":"script/init.js","./tab.js":"script/tab.js","./search.js":"script/search.js"}],"../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -508,7 +676,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53782" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62106" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

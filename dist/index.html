@@ -47,24 +47,31 @@
           </section>
         </section>
 
-        <section class="rank-view hidden">排行</section>
+        <section class="rank-view hidden">
+          <ul class="rank_view_ul"></ul>
+        </section>
 
         <section class="search-view hidden">
           <section class="search">
-            <form class="search_form">
+            <form class="search_form" action="javascript:;">
               <div class="search_form_group">
-                <input data-view=".search_view" data-type="search" class="search_form_input" type="text" placeholder="搜索">
+                <input data-view=".search_view" name="key" name2="value" data-type="search" class="search_form_input" type="text" placeholder="搜索">
                 <img src="/search.48f4844e.svg" alt="" height="">
                 <span class="search_form_button hidden">取消</span>
               </div>
             </form>
           </section>
-          <section class="hidden search_view">搜索</section>
+          <section class="search-view-hot">
+            <p>热门搜索</p>
+            <ul class="search-view-hot-ul"></ul>
+          </section>
+          <section class="search-view-result hidden">
+            <ul class="search-view-result-ul"></ul>
+          </section>
         </section>
       </section>
     </section>
 
-    <script src="https://cdn.bootcdn.net/ajax/libs/underscore.js/1.11.0/underscore-min.js"></script>
     <script src="/app.25d4b319.js"></script>
   </body>
 </html>

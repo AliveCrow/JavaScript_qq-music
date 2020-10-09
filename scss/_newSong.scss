@@ -7,7 +7,8 @@ h2 {
   margin-left: 10px;
 }
 
-.song_list {}
+.song_list {
+}
 
 .new_song_list,
 .rec_foryou_list,
@@ -22,24 +23,21 @@ h2 {
     margin: 0 auto;
   }
 
-  ul>li {
+  ul > li {
     width: 50%;
-    // outline: 1px solid red;
     padding: 10px 20px;
-
+    position: relative;
     a {
       width: 100%;
       // height: 400px;
       text-decoration: none;
       color: $fontColor;
       text-align: center;
-      font-size: .2rem;
+      font-size: 0.2rem;
       display: -webkit-box;
       -webkit-box-orient: vertical;
-      -webkit-line-clamp: 3;
+      -webkit-line-clamp: 2;
       overflow: hidden;
-      position: relative;
-
       .img_url {
         width: 100%;
         border-radius: 5px;
@@ -49,8 +47,8 @@ h2 {
 
       .img_btn {
         position: absolute;
-        bottom: 0;
-        right: 0;
+        bottom: -10px;
+        right: 15px;
         width: 30px;
         height: 30px;
         z-index: 99;
@@ -58,7 +56,7 @@ h2 {
         padding: 7px;
         margin-bottom: 3rem;
         margin-right: 10px;
-        background-color: rgba(0, 0, 0, .5);
+        background-color: rgba(0, 0, 0, 0.5);
       }
     }
   }
@@ -74,7 +72,7 @@ h2 {
       font-weight: 200;
 
       span {
-        font-size: .2em;
+        font-size: 0.2em;
         display: inline-block;
         padding: 0 5px;
         display: -webkit-box;

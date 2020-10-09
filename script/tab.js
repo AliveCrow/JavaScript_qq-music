@@ -14,7 +14,5 @@ document.addEventListener('click', function (e) {
       item.style.display = 'none'
     })
   }
-
-
   content.style.display = 'block'
 })

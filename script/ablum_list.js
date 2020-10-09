@@ -1,7 +1,4 @@
 
-import AjaxReq from './ajax.js'
-import Slider from './slider.js'
-
 
 export default class Ablum {
   constructor(item) {
@@ -13,11 +10,13 @@ export default class Ablum {
     dom.innerHTML =
       `<li >
       <a href="">
-        <img
-          class="img_url lazy_load"
-          data-src="${this.item.imgurl}"
-          alt=""
-        />
+
+      <img
+      class="img_url lazy_load"
+      data-src="${this.item.imgurl}"
+      alt=""
+    />
+
         <p>${this.item.dissname}</p>
         <img class="img_btn" alt="img" src='http://qiniu.dreamsakula.top/images/20201009083809.png' />
       </a>
