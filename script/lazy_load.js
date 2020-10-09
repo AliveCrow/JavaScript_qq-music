@@ -2,21 +2,35 @@ function lazyLoad(images) {
 
   let imgs = [].slice.call(images)  //Array.from(images)转成数组
 
-  let onscroll = throttle(function () {
-    if (imgs.length === 0) {
-      window.removeEventListener('scroll', () => { })
-      return
-    }
-    imgs = imgs.filter(img => img.classList.contains('lazy_load'))
-    imgs.forEach(item => {
-      if (inViewport(item)) {
-        loadImage(item)
-      }
-    })
-  }, 700)
+  //使用api IntersectionObserver 支持不好
+  if ('IntersectionObserver' in window) {
+    let observer = new IntersectionObserver(function (e) {
+      e.forEach(img => {
+        if (img.intersectionRatio > 0) {
+          loadImage(img.target, () => {
+            observer.unobserve(img.target)
+          })
+        }
+      })
+    }, { threshold: 0.01 })
+    imgs.forEach(img => observer.observe(img))
 
-  window.addEventListener('scroll', onscroll)
-  window.dispatchEvent(new Event('scroll'))
+  } else {
+    let onscroll = throttle(function () {
+      if (imgs.length === 0) {
+        window.removeEventListener('scroll', () => { })
+        return
+      }
+      imgs = imgs.filter(img => img.classList.contains('lazy_load'))
+      imgs.forEach(item => {
+        if (inViewport(item)) {
+          loadImage(item)
+        }
+      })
+    }, 700)
+    window.addEventListener('scroll', onscroll)
+    window.dispatchEvent(new Event('scroll'))
+  }
 
   function throttle(func, wait) {
     let prev, timer
@@ -50,7 +64,13 @@ function lazyLoad(images) {
       img.src = image.src
       img.classList.remove('lazyload')
     }
+    if (typeof callback === 'function') callback()
   }
+
+
+
+
+
 
 
 }

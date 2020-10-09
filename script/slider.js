@@ -22,6 +22,7 @@ export default class Slider {
       }
     }, 1500)
   }
+
 }
 
 // let sliderImg = document.querySelector('.slider_img')

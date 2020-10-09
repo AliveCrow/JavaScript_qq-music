@@ -277,39 +277,7 @@ var Ajax = /*#__PURE__*/function () {
 
 
 exports.default = Ajax;
-},{}],"script/banner.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _ajax = _interopRequireDefault(require("./ajax.js"));
-
-var _slider = _interopRequireDefault(require("./slider.js"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var sliderFun = function sliderFun() {
-  var getData = new _ajax.default();
-  var banner = getData.req('GET', 'http://localhost:3300/recommend/banner'); //加载轮播图
-
-  banner.then(function (res) {
-    var song = JSON.parse(res);
-    var sliderImg = document.querySelector('.slider').firstElementChild;
-    song.data.push(song.data[0]);
-    sliderImg.innerHTML = song.data.map(function (item) {
-      return "<a href=\"".concat(item.h5Url, "\">\n        <img src=\"").concat(item.picUrl, "\" alt=\"\" />\n      </a>");
-    }).join("");
-    var slider = new _slider.default(document.querySelector('.slider_img'));
-    slider.run();
-  });
-};
-
-var _default = sliderFun;
-exports.default = _default;
-},{"./ajax.js":"script/ajax.js","./slider.js":"script/slider.js"}],"script/ablum_list.js":[function(require,module,exports) {
+},{}],"script/ablum_list.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -347,30 +315,7 @@ var Ablum = /*#__PURE__*/function () {
   }]);
 
   return Ablum;
-}(); // function ablumList() {
-//   //歌单渲染
-//   let getData = new AjaxReq()
-//   let songList = getData.req('GET', 'http://localhost:3300/songlist/list?category=165')
-//   songList.then(res => {
-//     let songList = JSON.parse(res)
-//     let song_list_ul = document.querySelector('.song_list_ul')
-//     song_list_ul.innerHTML = songList.data.list.map(item => {
-//       return `<li>
-//     <a href="">
-//       <img
-//         class="img_url lazy_load"
-//         data-src="${item.imgurl}"
-//         alt=""
-//       />
-//       <p>${item.dissname}</p>
-//       <img class="img_btn" alt="img" src='http://qiniu.dreamsakula.top/images/20201009083809.png' />
-//     </a>
-//   </li>`
-//     }).join("")
-//   })
-// }
-// export default ablumList
-
+}();
 
 exports.default = Ablum;
 },{"./ajax.js":"script/ajax.js","./slider.js":"script/slider.js"}],"script/lazy_load.js":[function(require,module,exports) {
@@ -383,24 +328,42 @@ exports.default = void 0;
 
 function lazyLoad(images) {
   var imgs = [].slice.call(images); //Array.from(images)转成数组
+  //使用api IntersectionObserver 支持不好
 
-  var onscroll = throttle(function () {
-    if (imgs.length === 0) {
-      window.removeEventListener('scroll', function () {});
-      return;
-    }
-
-    imgs = imgs.filter(function (img) {
-      return img.classList.contains('lazy_load');
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (e) {
+      e.forEach(function (img) {
+        if (img.intersectionRatio > 0) {
+          loadImage(img.target, function () {
+            observer.unobserve(img.target);
+          });
+        }
+      });
+    }, {
+      threshold: 0.01
     });
-    imgs.forEach(function (item) {
-      if (inViewport(item)) {
-        loadImage(item);
+    imgs.forEach(function (img) {
+      return observer.observe(img);
+    });
+  } else {
+    var onscroll = throttle(function () {
+      if (imgs.length === 0) {
+        window.removeEventListener('scroll', function () {});
+        return;
       }
-    });
-  }, 700);
-  window.addEventListener('scroll', onscroll);
-  window.dispatchEvent(new Event('scroll'));
+
+      imgs = imgs.filter(function (img) {
+        return img.classList.contains('lazy_load');
+      });
+      imgs.forEach(function (item) {
+        if (inViewport(item)) {
+          loadImage(item);
+        }
+      });
+    }, 700);
+    window.addEventListener('scroll', onscroll);
+    window.dispatchEvent(new Event('scroll'));
+  }
 
   function throttle(func, wait) {
     var prev, timer;
@@ -439,12 +402,62 @@ function lazyLoad(images) {
       img.src = image.src;
       img.classList.remove('lazyload');
     };
+
+    if (typeof callback === 'function') callback();
   }
 }
 
 var _default = lazyLoad;
 exports.default = _default;
-},{}],"script/app.js":[function(require,module,exports) {
+},{}],"script/init.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _ajax = _interopRequireDefault(require("./ajax.js"));
+
+var _slider = _interopRequireDefault(require("./slider.js"));
+
+var _ablum_list = _interopRequireDefault(require("./ablum_list.js"));
+
+var _lazy_load = _interopRequireDefault(require("./lazy_load.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var getData = new _ajax.default();
+var init = {
+  slider: function slider() {
+    var banner = getData.req('GET', 'http://localhost:3300/recommend/banner'); //加载轮播图
+
+    banner.then(function (res) {
+      var song = JSON.parse(res);
+      var sliderImg = document.querySelector('.slider').firstElementChild;
+      song.data.push(song.data[0]);
+      sliderImg.innerHTML = song.data.map(function (item) {
+        return "<a href=\"".concat(item.h5Url, "\">\n            <img src=\"").concat(item.picUrl, "\" alt=\"\" />\n          </a>");
+      }).join("");
+      var slider = new _slider.default(document.querySelector('.slider_img'));
+      slider.run();
+    });
+  },
+  ablumList: function ablumList() {
+    var songList = getData.req('GET', 'http://localhost:3300/songlist/list?category=165');
+    songList.then(function (res) {
+      var songList = JSON.parse(res);
+      songList.data.list.map(function (item) {
+        var ablumList = new _ablum_list.default(item);
+        ablumList.render();
+        (0, _lazy_load.default)(document.querySelectorAll('.lazy_load')); //懒加载
+      });
+    });
+  }
+};
+var _default = init;
+exports.default = _default;
+},{"./ajax.js":"script/ajax.js","./slider.js":"script/slider.js","./ablum_list.js":"script/ablum_list.js","./lazy_load.js":"script/lazy_load.js"}],"script/app.js":[function(require,module,exports) {
 "use strict";
 
 var _slider = _interopRequireDefault(require("./slider.js"));
@@ -455,31 +468,19 @@ require("./search.js");
 
 var _ajax = _interopRequireDefault(require("./ajax.js"));
 
-var _banner = _interopRequireDefault(require("./banner.js"));
-
-var _ablum_list = _interopRequireDefault(require("./ablum_list.js"));
-
-var _lazy_load = _interopRequireDefault(require("./lazy_load.js"));
+var _init = _interopRequireDefault(require("./init.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var render = function render() {
-  (0, _banner.default)(); //轮播图
+  _init.default.slider();
 
-  var getData = new _ajax.default();
-  var songList = getData.req('GET', 'http://localhost:3300/songlist/list?category=165');
-  songList.then(function (res) {
-    var songList = JSON.parse(res);
-    songList.data.list.map(function (item) {
-      var ablumList = new _ablum_list.default(item);
-      ablumList.render();
-      (0, _lazy_load.default)(document.querySelectorAll('.lazy_load')); //懒加载
-    });
-  }); // ablumList() //个单加载
+  _init.default.ablumList(); // ablumList() //个单加载
+
 };
 
 render();
-},{"./slider.js":"script/slider.js","./tab.js":"script/tab.js","./search.js":"script/search.js","./ajax.js":"script/ajax.js","./banner.js":"script/banner.js","./ablum_list.js":"script/ablum_list.js","./lazy_load.js":"script/lazy_load.js"}],"../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./slider.js":"script/slider.js","./tab.js":"script/tab.js","./search.js":"script/search.js","./ajax.js":"script/ajax.js","./init.js":"script/init.js"}],"../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
