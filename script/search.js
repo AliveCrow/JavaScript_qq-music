@@ -1,33 +1,18 @@
 let input = document.querySelector('.search_form_input')
-hot()
+let search_form_button = document.querySelector('.search_form_button')
+
 input.addEventListener('focus', (e) => {
-  console.log(e.target.dataset.type);
   if (e.target.dataset.type !== 'search') return
-
-  let content = document.querySelector(e.target.dataset.view)
-  if (content) {
-    content.style.display = 'block'
-  }
+  search_form_button.style.display = 'block'
 })
 
-input.addEventListener('blur', (e) => {
+search_form_button.addEventListener('click', (e) => {
+  search_form_button.style.display = 'none'
   input.value = ""
-  let content = document.querySelector('.search_view')
-  if (content) {
-    content.style.display = 'none'
-  }
+
+  document.querySelector('.search-view-result').classList.add('hidden')
+  document.querySelector('.search-view-result-ul').innerHTML = ''
+  document.querySelector('.search-view-hot').classList.remove('hidden')
 })
 
-//热门搜索
-function hot(item) {
-  let search_view_hot_ul = document.querySelector('.search-view-hot-ul')
-  let dom = document.createElement('li')
-  dom.innerHTML =
-    `
-  <li>${item}</li>
-  `
-  search_view_hot_ul.appendChild(dom)
-
-
-}
 

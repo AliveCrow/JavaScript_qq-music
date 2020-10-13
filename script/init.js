@@ -4,11 +4,27 @@ import AblumList from './ablum_list.js'
 import lazyLoad from './lazy_load.js'
 import Rank from './rank.js';
 
+
 const { default: Ajax } = require("./ajax");
+
 
 const init = {
   getData: new Ajax(),
   page: 1,
+  singer: {
+    'singerName': '',
+    'songNum': '',
+    'singerPic': '',
+    'albumNum': '',
+  },
+  page: 1,
+  keyContainer: document.querySelector('.search_form_input'),
+  search_form: document.querySelector('.search_form'),
+  input: document.querySelector('.search_form_input'),
+  search_view_hot: document.querySelector('.search-view-hot'),
+  search_result: document.querySelector('.search-view-result'),
+  search_view_result_ul: document.querySelector('.search-view-result-ul'),
+
   slider() {
     let banner = this.getData.req('GET', 'http://localhost:3300/recommend/banner')
     //加载轮播图
@@ -60,7 +76,6 @@ const init = {
   hotWord() {
     let hotWord = this.getData.req('GET', 'http://localhost:3300/search/hot')
     hotWord.then(res => {
-      console.log(JSON.parse(res));
       JSON.parse(res).data.map(item => {
         let search_view_hot_ul = document.querySelector('.search-view-hot-ul')
         let dom = document.createElement('li')
@@ -74,52 +89,21 @@ const init = {
     })
   },
 
-  search(page) {
-    console.log('run');
+  search() {
     let _this = this
-    let keyContainer = document.querySelector('.search_form_input')
-    let search_form = document.querySelector('.search_form')
-    let input = document.querySelector('.search_form_input')
-    let search_view_hot = document.querySelector('.search-view-hot')
-    let search_result = document.querySelector('.search-view-result')
-    let search_view_result_ul = document.querySelector('.search-view-result-ul')
-    search_form.addEventListener('submit', function (e) {
-      e.preventDefault()
+    window.addEventListener('keyup', function (e) {
+      if (e.code !== 'Enter') return
       //是否是歌手
-      _this.getData.req('GET', `http://localhost:3300/search?key=${input.value}&t=9`).then(singer => {
-        if (JSON.parse(singer).data.list !== []) {
-          let singerName = JSON.parse(singer).data.list[0].singerName
-          let songNum = JSON.parse(singer).data.list[0].songNum
-          let singerPic = JSON.parse(singer).data.list[0].singerPic
-          let albumNum = JSON.parse(singer).data.list[0].albumNum
-
-          let search = _this.getData.req('GET', `http://localhost:3300/search?key=${input.value}&t=0&pageSize=20&pageNo=${page || _this.page}`)
-          search.then(res => {
-            console.log("ryn");
-            let list = JSON.parse(res).data.list
-            console.log(list);
-            let dom_singer = document.createElement('a')
-            dom_singer.classList.add('result')
-            dom_singer.innerHTML =
-              `<img src="${singerPic}" alt="" />
-            <dl>
-              <dt>歌手: ${singerName}</dt>
-              <dd>歌曲:${songNum} 专辑:${albumNum}</dd>
-            </dl>
-            `
-            search_result.insertBefore(dom_singer, search_view_result_ul)
-            let dom_singList = document.createElement('li')
-            list.map(list_item => {
-              _this.renderList(list_item)
-            })
-            search_view_hot.classList.add('hidden')
-            search_result.classList.remove('hidden')
-          })
-        } else {
-
-        }
+      let search = _this.getData.req('GET', `http://localhost:3300/search?key=${_this.input.value}&t=0&pageSize=20&pageNo=${_this.page}`)
+      search.then(res => {
+        let list = JSON.parse(res).data.list
+        let dom_singList = document.createElement('li')
+        list.map(list_item => {
+          _this.renderList(list_item)
+        })
+        _this.search_view_hot.classList.add('hidden')
+        _this.search_result.classList.remove('hidden')
       })
-
     })
   },
 
@@ -141,52 +125,26 @@ const init = {
   //滚动加载
   scrollLoad() {
     let _this = this
-    let page = 1
-    let keyContainer = document.querySelector('.search_form_input')
-    let search_form = document.querySelector('.search_form')
-    let input = document.querySelector('.search_form_input')
-    let search_view_hot = document.querySelector('.search-view-hot')
-    let search_result = document.querySelector('.search-view-result')
-    let search_view_result_ul = document.querySelector('.search-view-result-ul')
     window.addEventListener('scroll', function (e) {
       if (pageYOffset + document.documentElement.clientHeight > document.body.scrollHeight - 50) {
-        page += 1
-        _this.getData.req('GET', `http://localhost:3300/search?key=${input.value}&t=9`).then(singer => {
-          if (JSON.parse(singer).data.list !== []) {
-            let singerName = JSON.parse(singer).data.list[0].singerName
-            let songNum = JSON.parse(singer).data.list[0].songNum
-            let singerPic = JSON.parse(singer).data.list[0].singerPic
-            let albumNum = JSON.parse(singer).data.list[0].albumNum
-
-            let search = _this.getData.req('GET', `http://localhost:3300/search?key=${input.value}&t=0&pageSize=20&pageNo=${page || _this.page}`)
-            search.then(res => {
-              console.log("ryn");
-              let list = JSON.parse(res).data.list
-              console.log(list);
-              let dom_singer = document.createElement('a')
-              dom_singer.classList.add('result')
-              dom_singer.innerHTML =
-                `<img src="${singerPic}" alt="" />
-              <dl>
-                <dt>歌手: ${singerName}</dt>
-                <dd>歌曲:${songNum} 专辑:${albumNum}</dd>
-              </dl>
-              `
-              search_result.insertBefore(dom_singer, search_view_result_ul)
-              let dom_singList = document.createElement('li')
-              list.map(list_item => {
-                _this.renderList(list_item)
-              })
-              search_view_hot.classList.add('hidden')
-              search_result.classList.remove('hidden')
-            })
-          } else {
-
-          }
+        _this.page += 1
+        let search = _this.getData.req('GET', `http://localhost:3300/search?key=${_this.input.value}&t=0&pageSize=20&pageNo=${_this.page}`)
+        search.then(res => {
+          let list = JSON.parse(res).data.list
+          let dom_singList = document.createElement('li')
+          list.map(list_item => {
+            _this.renderList(list_item)
+          })
+          _this.search_view_hot.classList.add('hidden')
+          _this.search_result.classList.remove('hidden')
         })
       }
     })
   }
+
+  //点击热门搜索
+
+
 
 }
 

@@ -1,0 +1,39 @@
+.rank-view li {
+  background-color: #fff;
+  padding-left: 10px;
+  border-radius: 5px;
+  overflow-y: scroll;
+  height: 100%;
+  margin: 10px 30px;
+}
+.rank-view li a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-decoration: none;
+  color: #575656;
+}
+.rank-view li a dt {
+  font-size: 1.2em;
+  color: #000;
+  font-weight: 600;
+}
+@media (max-width: 400px) {
+  .rank-view li a dd {
+    max-width: 100px !important;
+  }
+}
+.rank-view li a dd {
+  font-size: 0.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+}
+.rank-view li a dd span {
+  color: #000;
+  font-weight: 600;
+}
+.rank-view li a img {
+  max-width: 100px;
+}

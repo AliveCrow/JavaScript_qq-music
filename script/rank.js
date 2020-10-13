@@ -12,7 +12,7 @@ export default class Rank {
         <dl>
           <dt>${this.item.label}</dt>
           <dd><span>1. </span>${this.item.song[0].title + '-' + this.item.song[0].singerName}</dd>
-          <dd><span>2. </span>$${this.item.song[1].title + '-' + this.item.song[1].singerName}</dd>
+          <dd><span>2. </span>${this.item.song[1].title + '-' + this.item.song[1].singerName}</dd>
           <dd><span>3. </span>${this.item.song[2].title + '-' + this.item.song[2].singerName}</dd>
         </dl>
         <img src="${this.item.picUrl}" alt="" />

@@ -1,11 +1,14 @@
-@import 'slider', 'newSong', 'animation', 'search', 'header', 'var', 'reset', 'rank';
+@import 'playView', 'slider', 'newSong', 'animation', 'search', 'header', 'var', 'reset', 'rank';
 
 body {
   background-color: $bodyBgc;
+  overflow-x: hidden;
 
   &::-webkit-scrollbar {
     width: 1px;
   }
+
+  position: relative;
 }
 
 .hidden {

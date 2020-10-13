@@ -23,18 +23,3 @@ export default class Ajax {
     });
   }
 }
-  // const request = new XMLHttpRequest()
-  // request.open(method, url)
-  // request.onreadystatechange = (e) => {
-  //   if (request.readyState === 4) {
-  //     if (request.status === 200) {
-  //       // console.log(JSON.parse(request.response));
-  //       return JSON.parse(request.response)
-  //     } else {
-
-  //     }
-  //   }
-  // }
-
-  // request.send()
-  // }

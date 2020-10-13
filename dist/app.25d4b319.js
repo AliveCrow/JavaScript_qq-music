@@ -336,7 +336,7 @@ var Rank = /*#__PURE__*/function () {
       var rank_view_ul = document.querySelector('.rank_view_ul');
       var dom = document.createElement('li');
       dom.classList.add('lazy_load');
-      dom.innerHTML = "<a href=\"#\">\n        <dl>\n          <dt>".concat(this.item.label, "</dt>\n          <dd><span>1. </span>").concat(this.item.song[0].title + '-' + this.item.song[0].singerName, "</dd>\n          <dd><span>2. </span>$").concat(this.item.song[1].title + '-' + this.item.song[1].singerName, "</dd>\n          <dd><span>3. </span>").concat(this.item.song[2].title + '-' + this.item.song[2].singerName, "</dd>\n        </dl>\n        <img src=\"").concat(this.item.picUrl, "\" alt=\"\" />\n      </a>");
+      dom.innerHTML = "<a href=\"#\">\n        <dl>\n          <dt>".concat(this.item.label, "</dt>\n          <dd><span>1. </span>").concat(this.item.song[0].title + '-' + this.item.song[0].singerName, "</dd>\n          <dd><span>2. </span>").concat(this.item.song[1].title + '-' + this.item.song[1].singerName, "</dd>\n          <dd><span>3. </span>").concat(this.item.song[2].title + '-' + this.item.song[2].singerName, "</dd>\n        </dl>\n        <img src=\"").concat(this.item.picUrl, "\" alt=\"\" />\n      </a>");
       rank_view_ul.appendChild(dom);
     }
   }]);
@@ -387,20 +387,7 @@ var Ajax = /*#__PURE__*/function () {
   }]);
 
   return Ajax;
-}(); // const request = new XMLHttpRequest()
-// request.open(method, url)
-// request.onreadystatechange = (e) => {
-//   if (request.readyState === 4) {
-//     if (request.status === 200) {
-//       // console.log(JSON.parse(request.response));
-//       return JSON.parse(request.response)
-//     } else {
-//     }
-//   }
-// }
-// request.send()
-// }
-
+}();
 
 exports.default = Ajax;
 },{}],"script/init.js":[function(require,module,exports) {
@@ -419,167 +406,136 @@ var _lazy_load = _interopRequireDefault(require("./lazy_load.js"));
 
 var _rank = _interopRequireDefault(require("./rank.js"));
 
+var _init;
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var _require = require("./ajax"),
     Ajax = _require.default;
 
-var init = {
+var init = (_init = {
   getData: new Ajax(),
   page: 1,
-  slider: function slider() {
-    var banner = this.getData.req('GET', 'http://localhost:3300/recommend/banner'); //加载轮播图
-
-    banner.then(function (res) {
-      var song = JSON.parse(res);
-      var sliderImg = document.querySelector('.slider').firstElementChild;
-      song.data.push(song.data[0]);
-      sliderImg.innerHTML = song.data.map(function (item) {
-        return "<a href=\"".concat(item.h5Url, "\">\n            <img src=\"").concat(item.picUrl, "\" alt=\"\" />\n          </a>");
-      }).join("");
-      var slider = new _slider.default(document.querySelector('.slider_img'));
-      slider.run();
-    });
-  },
-  ablumList: function ablumList() {
-    var songList = this.getData.req('GET', 'http://localhost:3300/songlist/list?category=165');
-    songList.then(function (res) {
-      var songList = JSON.parse(res);
-      songList.data.list.map(function (item) {
-        var ablumList = new _ablum_list.default(item);
-        ablumList.render();
-        (0, _lazy_load.default)(document.querySelectorAll('.lazy_load')); //懒加载
-      });
-    });
-  },
-  rankList: function rankList() {
-    var rankList = this.getData.req('GET', 'http://localhost:3300/top/category?showDetail=1');
-    rankList.then(function (res) {
-      var newArray = [];
-      var resData = JSON.parse(res);
-      [].slice.call(resData.data);
-      resData.data.forEach(function (item) {
-        item.list.forEach(function (listItem) {
-          newArray.push(listItem);
-        });
-      });
-      newArray.map(function (item) {
-        var rankRender = new _rank.default(item);
-        rankRender.render();
-      });
-    });
-  },
-  hotWord: function hotWord() {
-    var hotWord = this.getData.req('GET', 'http://localhost:3300/search/hot');
-    hotWord.then(function (res) {
-      console.log(JSON.parse(res));
-      JSON.parse(res).data.map(function (item) {
-        var search_view_hot_ul = document.querySelector('.search-view-hot-ul');
-        var dom = document.createElement('li');
-        dom.innerHTML = "\n      <li>".concat(item.k, "</li>\n      ");
-        search_view_hot_ul.appendChild(dom);
-      });
-    });
-  },
-  search: function search(page) {
-    console.log('run');
-
-    var _this = this;
-
-    var keyContainer = document.querySelector('.search_form_input');
-    var search_form = document.querySelector('.search_form');
-    var input = document.querySelector('.search_form_input');
-    var search_view_hot = document.querySelector('.search-view-hot');
-    var search_result = document.querySelector('.search-view-result');
-    var search_view_result_ul = document.querySelector('.search-view-result-ul');
-    search_form.addEventListener('submit', function (e) {
-      e.preventDefault(); //是否是歌手
-
-      _this.getData.req('GET', "http://localhost:3300/search?key=".concat(input.value, "&t=9")).then(function (singer) {
-        if (JSON.parse(singer).data.list !== []) {
-          var singerName = JSON.parse(singer).data.list[0].singerName;
-          var songNum = JSON.parse(singer).data.list[0].songNum;
-          var singerPic = JSON.parse(singer).data.list[0].singerPic;
-          var albumNum = JSON.parse(singer).data.list[0].albumNum;
-
-          var search = _this.getData.req('GET', "http://localhost:3300/search?key=".concat(input.value, "&t=0&pageSize=20&pageNo=").concat(page || _this.page));
-
-          search.then(function (res) {
-            console.log("ryn");
-            var list = JSON.parse(res).data.list;
-            console.log(list);
-            var dom_singer = document.createElement('a');
-            dom_singer.classList.add('result');
-            dom_singer.innerHTML = "<img src=\"".concat(singerPic, "\" alt=\"\" />\n            <dl>\n              <dt>\u6B4C\u624B: ").concat(singerName, "</dt>\n              <dd>\u6B4C\u66F2:").concat(songNum, " \u4E13\u8F91:").concat(albumNum, "</dd>\n            </dl>\n            ");
-            search_result.insertBefore(dom_singer, search_view_result_ul);
-            var dom_singList = document.createElement('li');
-            list.map(function (list_item) {
-              _this.renderList(list_item);
-            });
-            search_view_hot.classList.add('hidden');
-            search_result.classList.remove('hidden');
-          });
-        } else {}
-      });
-    });
-  },
-  renderList: function renderList(item) {
-    var search_view_result_ul = document.querySelector('.search-view-result-ul');
-    var dom_singList = document.createElement('li');
-    dom_singList.innerHTML = "\n      <a href=\"".concat(item.albummid, "\">\n        <dl>\n          <dt>").concat(item.songname, "</dt>\n          <dd>").concat(item.singer[0].name, "</dd>\n        </dl>\n      </a>\n    ");
-    search_view_result_ul.appendChild(dom_singList);
-  },
-  //滚动加载
-  scrollLoad: function scrollLoad() {
-    var _this = this;
-
-    var page = 1;
-    var keyContainer = document.querySelector('.search_form_input');
-    var search_form = document.querySelector('.search_form');
-    var input = document.querySelector('.search_form_input');
-    var search_view_hot = document.querySelector('.search-view-hot');
-    var search_result = document.querySelector('.search-view-result');
-    var search_view_result_ul = document.querySelector('.search-view-result-ul');
-    window.addEventListener('scroll', function (e) {
-      if (pageYOffset + document.documentElement.clientHeight > document.body.scrollHeight - 50) {
-        page += 1;
-
-        _this.getData.req('GET', "http://localhost:3300/search?key=".concat(input.value, "&t=9")).then(function (singer) {
-          if (JSON.parse(singer).data.list !== []) {
-            var singerName = JSON.parse(singer).data.list[0].singerName;
-            var songNum = JSON.parse(singer).data.list[0].songNum;
-            var singerPic = JSON.parse(singer).data.list[0].singerPic;
-            var albumNum = JSON.parse(singer).data.list[0].albumNum;
-
-            var search = _this.getData.req('GET', "http://localhost:3300/search?key=".concat(input.value, "&t=0&pageSize=20&pageNo=").concat(page || _this.page));
-
-            search.then(function (res) {
-              console.log("ryn");
-              var list = JSON.parse(res).data.list;
-              console.log(list);
-              var dom_singer = document.createElement('a');
-              dom_singer.classList.add('result');
-              dom_singer.innerHTML = "<img src=\"".concat(singerPic, "\" alt=\"\" />\n              <dl>\n                <dt>\u6B4C\u624B: ").concat(singerName, "</dt>\n                <dd>\u6B4C\u66F2:").concat(songNum, " \u4E13\u8F91:").concat(albumNum, "</dd>\n              </dl>\n              ");
-              search_result.insertBefore(dom_singer, search_view_result_ul);
-              var dom_singList = document.createElement('li');
-              list.map(function (list_item) {
-                _this.renderList(list_item);
-              });
-              search_view_hot.classList.add('hidden');
-              search_result.classList.remove('hidden');
-            });
-          } else {}
-        });
-      }
-    });
+  singer: {
+    'singerName': '',
+    'songNum': '',
+    'singerPic': '',
+    'albumNum': ''
   }
-};
+}, _defineProperty(_init, "page", 1), _defineProperty(_init, "keyContainer", document.querySelector('.search_form_input')), _defineProperty(_init, "search_form", document.querySelector('.search_form')), _defineProperty(_init, "input", document.querySelector('.search_form_input')), _defineProperty(_init, "search_view_hot", document.querySelector('.search-view-hot')), _defineProperty(_init, "search_result", document.querySelector('.search-view-result')), _defineProperty(_init, "search_view_result_ul", document.querySelector('.search-view-result-ul')), _defineProperty(_init, "slider", function slider() {
+  var banner = this.getData.req('GET', 'http://localhost:3300/recommend/banner'); //加载轮播图
+
+  banner.then(function (res) {
+    var song = JSON.parse(res);
+    var sliderImg = document.querySelector('.slider').firstElementChild;
+    song.data.push(song.data[0]);
+    sliderImg.innerHTML = song.data.map(function (item) {
+      return "<a href=\"".concat(item.h5Url, "\">\n            <img src=\"").concat(item.picUrl, "\" alt=\"\" />\n          </a>");
+    }).join("");
+    var slider = new _slider.default(document.querySelector('.slider_img'));
+    slider.run();
+  });
+}), _defineProperty(_init, "ablumList", function ablumList() {
+  var songList = this.getData.req('GET', 'http://localhost:3300/songlist/list?category=165');
+  songList.then(function (res) {
+    var songList = JSON.parse(res);
+    songList.data.list.map(function (item) {
+      var ablumList = new _ablum_list.default(item);
+      ablumList.render();
+      (0, _lazy_load.default)(document.querySelectorAll('.lazy_load')); //懒加载
+    });
+  });
+}), _defineProperty(_init, "rankList", function rankList() {
+  var rankList = this.getData.req('GET', 'http://localhost:3300/top/category?showDetail=1');
+  rankList.then(function (res) {
+    var newArray = [];
+    var resData = JSON.parse(res);
+    [].slice.call(resData.data);
+    resData.data.forEach(function (item) {
+      item.list.forEach(function (listItem) {
+        newArray.push(listItem);
+      });
+    });
+    newArray.map(function (item) {
+      var rankRender = new _rank.default(item);
+      rankRender.render();
+    });
+  });
+}), _defineProperty(_init, "hotWord", function hotWord() {
+  var hotWord = this.getData.req('GET', 'http://localhost:3300/search/hot');
+  hotWord.then(function (res) {
+    JSON.parse(res).data.map(function (item) {
+      var search_view_hot_ul = document.querySelector('.search-view-hot-ul');
+      var dom = document.createElement('li');
+      dom.innerHTML = "\n      <li>".concat(item.k, "</li>\n      ");
+      search_view_hot_ul.appendChild(dom);
+    });
+  });
+}), _defineProperty(_init, "search", function search() {
+  var _this = this;
+
+  window.addEventListener('keyup', function (e) {
+    if (e.code !== 'Enter') return; //是否是歌手
+
+    var search = _this.getData.req('GET', "http://localhost:3300/search?key=".concat(_this.input.value, "&t=0&pageSize=20&pageNo=").concat(_this.page));
+
+    search.then(function (res) {
+      var list = JSON.parse(res).data.list;
+      var dom_singList = document.createElement('li');
+      list.map(function (list_item) {
+        _this.renderList(list_item);
+      });
+
+      _this.search_view_hot.classList.add('hidden');
+
+      _this.search_result.classList.remove('hidden');
+    });
+  });
+}), _defineProperty(_init, "renderList", function renderList(item) {
+  var search_view_result_ul = document.querySelector('.search-view-result-ul');
+  var dom_singList = document.createElement('li');
+  dom_singList.innerHTML = "\n      <a href=\"".concat(item.albummid, "\">\n        <dl>\n          <dt>").concat(item.songname, "</dt>\n          <dd>").concat(item.singer[0].name, "</dd>\n        </dl>\n      </a>\n    ");
+  search_view_result_ul.appendChild(dom_singList);
+}), _defineProperty(_init, "scrollLoad", function scrollLoad() {
+  var _this = this;
+
+  window.addEventListener('scroll', function (e) {
+    if (pageYOffset + document.documentElement.clientHeight > document.body.scrollHeight - 50) {
+      _this.page += 1;
+
+      var search = _this.getData.req('GET', "http://localhost:3300/search?key=".concat(_this.input.value, "&t=0&pageSize=20&pageNo=").concat(_this.page));
+
+      search.then(function (res) {
+        var list = JSON.parse(res).data.list;
+        var dom_singList = document.createElement('li');
+        list.map(function (list_item) {
+          _this.renderList(list_item);
+        });
+
+        _this.search_view_hot.classList.add('hidden');
+
+        _this.search_result.classList.remove('hidden');
+      });
+    }
+  });
+}), _init);
 var _default = init;
 exports.default = _default;
 },{"./slider.js":"script/slider.js","./ablum_list.js":"script/ablum_list.js","./lazy_load.js":"script/lazy_load.js","./rank.js":"script/rank.js","./ajax":"script/ajax.js"}],"script/tab.js":[function(require,module,exports) {
+var input = document.querySelector('.search_form_input');
 document.addEventListener('click', function (e) {
   //判断点击是否是tab
   if (e.target.dataset.type !== 'tab') return;
+
+  if (e.target.dataset.view !== '.search-view') {
+    input.value = '';
+    document.querySelector('.search-view-result').classList.add('hidden');
+    document.querySelector('.search-view-result-ul').innerHTML = '';
+    document.querySelector('.search-view-hot').classList.remove('hidden');
+  }
+
   [].forEach.call(e.target.parentElement.children, function (item) {
     item.classList.remove('active');
   });
@@ -596,32 +552,426 @@ document.addEventListener('click', function (e) {
 });
 },{}],"script/search.js":[function(require,module,exports) {
 var input = document.querySelector('.search_form_input');
-hot();
+var search_form_button = document.querySelector('.search_form_button');
 input.addEventListener('focus', function (e) {
-  console.log(e.target.dataset.type);
   if (e.target.dataset.type !== 'search') return;
-  var content = document.querySelector(e.target.dataset.view);
-
-  if (content) {
-    content.style.display = 'block';
-  }
+  search_form_button.style.display = 'block';
 });
-input.addEventListener('blur', function (e) {
+search_form_button.addEventListener('click', function (e) {
+  search_form_button.style.display = 'none';
   input.value = "";
-  var content = document.querySelector('.search_view');
+  document.querySelector('.search-view-result').classList.add('hidden');
+  document.querySelector('.search-view-result-ul').innerHTML = '';
+  document.querySelector('.search-view-hot').classList.remove('hidden');
+});
+},{}],"script/lyriceClass.js":[function(require,module,exports) {
+"use strict";
 
-  if (content) {
-    content.style.display = 'none';
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.LyricInit = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var _require = require("./ajax"),
+    Ajax = _require.default;
+
+var LyricInit = /*#__PURE__*/function () {
+  function LyricInit(el, audio) {
+    _classCallCheck(this, LyricInit);
+
+    this.el = el; //歌词渲染的父节点
+
+    this.lyric = '';
+    this.text = '';
+    this.time = 0;
+    this.index = 0;
+    this.audio = audio;
+    this.intervalId = null;
+    this.LINE_HEIGHT = 42;
+    this.getData = new Ajax();
+    this.formatText();
   }
-}); //热门搜索
 
-function hot(item) {
-  var search_view_hot_ul = document.querySelector('.search-view-hot-ul');
-  var dom = document.createElement('li');
-  dom.innerHTML = "\n  <li>".concat(item, "</li>\n  ");
-  search_view_hot_ul.appendChild(dom);
-}
-},{}],"script/app.js":[function(require,module,exports) {
+  _createClass(LyricInit, [{
+    key: "formatText",
+    value: function formatText(text) {
+      var _this = this;
+
+      // let dom = document.createElement('div')
+      // dom.innerHTML = text
+      // return dom.innerText
+      // 
+      this.getData.req('GET', 'http://localhost:3300/lyric?songmid=002OEYa71wMnH3').then(function (res) {
+        var dom = document.createElement('div');
+        dom.innerHTML = JSON.parse(res).data.lyric;
+        _this.lyric = dom.innerText.match(/^\[\d{2}:\d{2}.\d{2}\](.+)$/gm);
+
+        if (_this.lyric !== null) {
+          _this.render();
+        } else {
+          console.error('没有歌词');
+        }
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var html = this.lyric.map(function (item) {
+        return "<div class=\"player-lyrics-line\">".concat(item.slice(10), "</div>");
+      }).join('');
+      this.el.innerHTML = html;
+    }
+  }, {
+    key: "getSec",
+    value: function getSec(lyric) {
+      //单句歌词的时间
+      return lyric.replace(/^\[(\d{2}):(\d{2}).*/, function (match, p1, p2) {
+        return 60 * +p1 + +p2;
+      });
+    }
+  }, {
+    key: "updateScroll",
+    value: function updateScroll() {
+      this.time = Math.round(this.audio ? this.audio.currentTime : this.time + 1);
+      if (this.index === this.lyric.length - 1) return;
+
+      for (var i = this.index; i < this.lyric.length; i++) {
+        var sec = this.getSec(this.lyric[i]);
+
+        if (this.time === +sec && (!this.lyric[i + 1] || this.time < this.getSec(this.lyric[i + 1]))) {
+          this.el.children[this.index].classList.remove('active');
+          this.el.children[i].classList.add('active');
+          this.index = i;
+          break;
+        }
+
+        if (this.index > 2) {
+          var y = -(this.index - 2) * this.LINE_HEIGHT;
+          this.el.style.transform = "translateY(".concat(y, "px)");
+        }
+      }
+    }
+  }, {
+    key: "startScroll",
+    value: function startScroll() {
+      this.stopScroll();
+      setInterval(this.updateScroll.bind(this), 1000);
+    }
+  }, {
+    key: "stopScroll",
+    value: function stopScroll() {
+      clearInterval(this.intervalId);
+    }
+  }, {
+    key: "restartScroll",
+    value: function restartScroll() {
+      this.resetScroll();
+      this.startScroll();
+    }
+  }, {
+    key: "resetScroll",
+    value: function resetScroll(text) {
+      this.stopScroll();
+      this.time = 0;
+      this.index = 0;
+      this.el.style.transform = "translateY(0px)";
+      var active = document.querySelector('.active');
+
+      if (active) {
+        active.classList.remove('active');
+      }
+
+      if (text) {
+        this.text = this.formatText(text) || '';
+        this.lyric = this.text.match(/^\[\d{2}:\d{2}.\d{2}\](.+)$/gm) || [];
+        if (this.lyric.length) this.render();
+      }
+
+      if (this.lyric.length) {
+        this.el.children[this.index].classList.add('active');
+      }
+    }
+  }]);
+
+  return LyricInit;
+}();
+
+exports.LyricInit = LyricInit;
+},{"./ajax":"script/ajax.js"}],"script/music_api.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var BASE_URL = 'http://localhost:3300';
+var api = {
+  SongMessage: "".concat(BASE_URL, "/song?songmid="),
+  Search: "".concat(BASE_URL, "/search?")
+};
+var _default = api;
+exports.default = _default;
+},{}],"script/getMusic.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.GetMusic = void 0;
+
+var _music_api = _interopRequireDefault(require("./music_api"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var _require = require("./ajax"),
+    Ajax = _require.default;
+
+var GetMusic = /*#__PURE__*/function () {
+  function GetMusic(songmid) {
+    _classCallCheck(this, GetMusic);
+
+    this.songmid = songmid;
+    this.musicData;
+    this.ajax = new Ajax();
+  }
+
+  _createClass(GetMusic, [{
+    key: "getMusicData",
+    value: function getMusicData() {
+      return this.ajax.req('GET', "".concat(_music_api.default.SongMessage).concat(this.songmid));
+    }
+  }, {
+    key: "getSongmid",
+    value: function getSongmid() {}
+  }]);
+
+  return GetMusic;
+}();
+
+exports.GetMusic = GetMusic;
+},{"./ajax":"script/ajax.js","./music_api":"script/music_api.js"}],"script/prograssClass.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Prograss = void 0;
+
+var _music_api = _interopRequireDefault(require("./music_api"));
+
+var _ajax = _interopRequireDefault(require("./ajax.js"));
+
+var _getMusic = require("./getMusic");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Prograss = /*#__PURE__*/function () {
+  function Prograss(el) {
+    _classCallCheck(this, Prograss);
+
+    this.el = el;
+    this.bar_box = document.querySelector('.bar_box');
+    this.audio = document.querySelector('audio');
+    this.now_time = document.querySelector('.now_time');
+    this.progress_bar = document.querySelector('.progress_bar');
+    this.api = _music_api.default;
+    this.currentTime = 0;
+    this.id = '';
+    this.getData = new _ajax.default();
+  }
+
+  _createClass(Prograss, [{
+    key: "run",
+    value: function run() {
+      this.id = setInterval(this.update.bind(this), 50);
+    }
+  }, {
+    key: "stop",
+    value: function stop() {
+      clearInterval(this.id);
+    }
+  }, {
+    key: "update",
+    value: function update() {
+      var allTime = this.audio.duration;
+      if (this.currentTime >= allTime) this.reset();
+      this.currentTime += 0.05;
+      var percent = this.currentTime / allTime * 100 - 100;
+      this.el.style.transform = "translateX(".concat(percent, "%)");
+      this.now_time.innerHTML = this.formatTime(this.n);
+    }
+  }, {
+    key: "reset",
+    value: function reset() {
+      this.stop();
+      this.currentTime = 0;
+      this.id = null;
+      this.el.style.transform = "translateX(".concat(0, "%)");
+      this.now_time.innerHTML = this.formatTime(this.n);
+    }
+  }, {
+    key: "restart",
+    value: function restart() {
+      this.reset();
+      this.run();
+    }
+  }, {
+    key: "formatTime",
+    value: function formatTime() {
+      var min = Math.floor(this.currentTime / 60);
+      var sec = Math.floor(this.currentTime % 60);
+      if (min < 10) min = '0' + min;
+      if (sec < 10) sec = '0' + sec;
+      return "".concat(min, ":").concat(sec);
+    }
+  }, {
+    key: "render",
+    value: function render(songmid) {
+      var a = this.api.SongMessage + '12312';
+      var getMusic = new _getMusic.GetMusic('0039MnYb0qxYhV');
+      var result = getMusic.getMusicData();
+      result.then(function (res) {
+        console.log(JSON.parse(res).data);
+      });
+    }
+  }]);
+
+  return Prograss;
+}();
+
+exports.Prograss = Prograss;
+},{"./music_api":"script/music_api.js","./ajax.js":"script/ajax.js","./getMusic":"script/getMusic.js"}],"script/playClass.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Play = void 0;
+
+var _lyriceClass = require("./lyriceClass.js");
+
+var _prograssClass = require("./prograssClass.js");
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Play = /*#__PURE__*/function () {
+  function Play(el) {
+    _classCallCheck(this, Play);
+
+    this.el = el;
+    this.el.addEventListener('click', this);
+    this.bar_box = document.querySelector('.bar_box');
+    this.lyric = new _lyriceClass.LyricInit(document.querySelector('.lyrice_move'), this.audio);
+    this.audio = this.createAudio();
+    this.prograss = new _prograssClass.Prograss(document.querySelector('.bar_prograss'));
+    this.go_top = document.querySelector('.go_top');
+    this.Event = {
+      'bar_box': '.bar_box',
+      'go_top': '.go_top',
+      'play_view': '.play_view',
+      'header_right': '.header_right'
+    };
+    this.prograss.render();
+  }
+
+  _createClass(Play, [{
+    key: "createAudio",
+    value: function createAudio() {
+      var _this = this;
+
+      var audio = document.createElement('audio');
+      audio.id = "player-".concat(Math.floor(Math.random() * 100), "-").concat(+new Date());
+      audio.autoplay = true; // audio.src = `
+      // http://122.226.161.16/amobile.music.tc.qq.com/C4000000NpyS0N53eQ.m4a?guid=2796982635&vkey=897581EF14BBE7548206DD34172383861DCF73621A0F16298E12CB50902820F11B537763DE14FC0C6C2F23A8D6DD2CB6441DE16B7C5C8921&uin=2404&fromtag=66
+      // `
+
+      audio.src = 'http://qiniu.dreamsakula.top/C4000000NpyS0N53eQ.mp4';
+      audio.addEventListener('ended', function (e) {
+        _this.audio.play();
+
+        _this.lyric.restartScroll();
+
+        _this.prograss.restart();
+      });
+      document.body.appendChild(audio);
+      return audio;
+    }
+  }, {
+    key: "handleEvent",
+    value: function handleEvent(event) {
+      var target = event.target;
+
+      switch (true) {
+        case target.matches('.bar_play'):
+          document.querySelector('.bar_pause').classList.remove('hidden');
+          document.querySelector('.bar_play').classList.add('hidden');
+          this.onPlay(event);
+          break;
+
+        case target.matches('.bar_pause'):
+          document.querySelector('.bar_play').classList.remove('hidden');
+          document.querySelector('.bar_pause').classList.add('hidden');
+          this.onPause(event);
+          break;
+
+        case target.matches('.top'):
+          this.hide();
+          break;
+      }
+    }
+  }, {
+    key: "onPlay",
+    value: function onPlay(Event) {
+      this.audio.play();
+      this.lyric.startScroll();
+      this.prograss.run();
+    }
+  }, {
+    key: "onPause",
+    value: function onPause(event) {
+      this.audio.pause();
+      this.lyric.stopScroll();
+      this.prograss.stop();
+    }
+  }, {
+    key: "show",
+    value: function show() {
+      this.el.style.transform = 'translateY(0%)';
+    }
+  }, {
+    key: "hidden",
+    value: function hidden() {
+      this.el.style.transform = 'translateY(-220vw)';
+    }
+  }]);
+
+  return Play;
+}();
+
+exports.Play = Play;
+},{"./lyriceClass.js":"script/lyriceClass.js","./prograssClass.js":"script/prograssClass.js"}],"script/app.js":[function(require,module,exports) {
 "use strict";
 
 var _init = _interopRequireDefault(require("./init.js"));
@@ -630,7 +980,20 @@ require("./tab.js");
 
 require("./search.js");
 
+var _playClass = require("./playClass.js");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var header_right = document.querySelector('.header_right');
+var go_top = document.querySelector('.go_top');
+var play = new _playClass.Play(document.querySelector('.play_view'));
+header_right.addEventListener('click', function (e) {
+  play.show();
+});
+go_top.addEventListener('click', function (e) {
+  play.hidden();
+});
+play.onPlay();
 
 var render = function render() {
   _init.default.slider();
@@ -643,12 +1006,11 @@ var render = function render() {
 
   _init.default.search();
 
-  _init.default.scrollLoad(); // ablumList() //个单加载
-
+  _init.default.scrollLoad();
 };
 
 render();
-},{"./init.js":"script/init.js","./tab.js":"script/tab.js","./search.js":"script/search.js"}],"../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./init.js":"script/init.js","./tab.js":"script/tab.js","./search.js":"script/search.js","./playClass.js":"script/playClass.js"}],"../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -676,7 +1038,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62106" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51163" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

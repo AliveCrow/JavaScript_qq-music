@@ -1,0 +1,126 @@
+.play_view {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  z-index: 999;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  transition: all 0.5s ease-in-out;
+  transform: translateY(-220vw);
+  transform-origin: bottom center;
+}
+.play_view .lyrice {
+  padding-right: 5px;
+  padding-left: 5px;
+  text-align: center;
+  background-color: white;
+  color: #fff;
+  font-weight: 200;
+  font-size: 18px;
+  width: 100%;
+  height: 85%;
+  position: relative;
+}
+.play_view .lyrice .go_top {
+  position: absolute;
+  z-index: 999;
+  height: 35px;
+  margin: 10px 25px;
+  right: 0;
+}
+.play_view .lyrice .bgc {
+  position: relative;
+  top: 0;
+  width: 100vw;
+  filter: blur(10px);
+  transform: scale(3);
+  transform-origin: center;
+}
+.play_view .lyrice .lyrice_box {
+  position: absolute;
+  top: 50px;
+  width: 100%;
+  height: 80%;
+  overflow-y: hidden;
+  padding: 0 10px;
+}
+.play_view .lyrice .lyrice_box .lyrice_move {
+  position: relative;
+  top: 120px;
+  transition: all 0.4s ease-in-out;
+}
+.play_view .lyrice .lyrice_box .player-lyrics-line {
+  line-height: 42px;
+  white-space: pre-wrap;
+}
+.play_view .progress_bar {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+  margin: 20px 0;
+  padding: 0 5px;
+  width: 100%;
+}
+.play_view .progress_bar img {
+  height: 70px;
+  border-radius: 5px;
+}
+.play_view .progress_bar .bar_box {
+  width: 100%;
+  margin-left: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 55px;
+}
+.play_view .progress_bar .bar_box .bar_play,
+.play_view .progress_bar .bar_box .bar_pause {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  left: 97%;
+  transform: translateX(-100%);
+  top: 20px;
+}
+.play_view .progress_bar span {
+  font-size: 0.6rem;
+  font-weight: 200;
+  color: #fff;
+}
+.play_view .progress_bar .bar {
+  width: 98%;
+  background-color: #fff;
+  height: 2px;
+  margin-bottom: 10px;
+  margin-top: 5px;
+  overflow: hidden;
+}
+.play_view .progress_bar .bar_prograss {
+  background-color: yellowgreen;
+  width: 100%;
+  height: 3px;
+  transform: translateX(-100%);
+}
+
+.active {
+  color: yellowgreen;
+  font-size: 20px;
+  animation: show 0.7s linear;
+}
+
+@keyframes show {
+  0% {
+    color: #fff;
+    font-size: 18px;
+  }
+  50% {
+    color: yellowgreen;
+    font-size: 18px;
+  }
+  100% {
+    color: yellowgreen;
+    font-size: 20px;
+  }
+}
